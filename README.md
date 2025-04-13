@@ -43,6 +43,14 @@ This Django-based microservice allows users to upload large CSV files and genera
 
 ---
 
+## Example Files
+
+You can find example input, reference, and rules files in this Google Drive folder:
+
+[Example Files](https://drive.google.com/drive/folders/1CT6r7pEOywQODt2XgZgBb5-ZQNjmB7en?usp=drive_link)
+
+---
+
 ## 🏗️ Architecture
 
 ```text
