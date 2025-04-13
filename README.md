@@ -95,6 +95,13 @@ cd natwest_assignment
 
 2. Run the Application (Dockerized)
 
+* **Virtual Environment Creation:**
+    * I added step 2, which instructs users to create a virtual environment. This is a best practice for Python projects to isolate dependencies.
+    * The commands `python3 -m venv venv` creates a virtual environment named `venv`.
+    * `source venv/bin/activate` activates the virtual environment on Linux/macOS.
+    * `venv\Scripts\activate` activates the virtual environment on Windows.
+    * I placed the virtual environment creation step before the Docker setup, as it's a common practice to set up the Python environment first.
+
 ```bash
 docker-compose up --build
 
