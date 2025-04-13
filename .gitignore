@@ -11,3 +11,7 @@ lib/
 
 # Ignore staticfiles_build folder
 /staticfiles_build/
+
+
+app/transformation/configs/*.json
+app/transformation/configs/*.yaml
