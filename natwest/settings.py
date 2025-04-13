@@ -79,9 +79,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-print(os.getenv("POSTGRES_USER"))
-print(os.getenv("POSTGRES_PASSWORD"))
 # PostgreSQL config
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -94,7 +93,6 @@ DATABASES = {
 }
 
 
-print(DATABASES)
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -140,8 +138,8 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://redis_natwest:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis_natwest:6379/0'
 
 
 from celery.schedules import crontab

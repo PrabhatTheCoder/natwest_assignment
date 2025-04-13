@@ -1,4 +1,4 @@
-# core/transformers/transformation_engine.py
+# utils/transformation.py
 import json
 import yaml
 from typing import Dict, List
@@ -34,7 +34,7 @@ class TransformationEngine:
 
         return output_row
 
-    def process_dataframe_chunked(self, input_path: str, ref_path: str, output_path: str):
+    def process_dataframe(self, input_path: str, ref_path: str, output_path: str):
         ref_df = pd.read_csv(ref_path)
         ref_dict1 = ref_df.set_index('refkey1').to_dict(orient='index')
         ref_dict2 = ref_df.set_index('refkey2').to_dict(orient='index')

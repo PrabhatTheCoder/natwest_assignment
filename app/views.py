@@ -41,23 +41,36 @@ class GenerateReportView(APIView):
 from django.http import FileResponse
 import os
 
+
 class DownloadReportView(APIView):
     def get(self, request, task_id):
         result = AsyncResult(task_id)
-        if result.ready():
-            output_path = result.get()
 
-            if not os.path.exists(output_path):
-                return Response({"error": "Report file not found."}, status=404)
+        if not result.ready():
+            return Response({"status": result.status}, status=202)
 
-            return FileResponse(
-                open(output_path, 'rb'),
-                content_type='text/csv',
-                as_attachment=True,
-                filename=os.path.basename(output_path)
-            )
+        output_path = result.get()
 
-        return Response({"status": result.status}, status=202)
+        # 🔍 Log for debugging
+        print("Returned result from task:", repr(output_path))
+        print("Type:", type(output_path))
+
+        if not isinstance(output_path, str):
+            return Response({
+                "error": "Invalid return from Celery task",
+                "value": str(output_path),
+                "type": str(type(output_path))
+            }, status=500)
+
+        if not os.path.exists(output_path):
+            return Response({"error": "Report file not found."}, status=404)
+
+        return FileResponse(
+            open(output_path, 'rb'),
+            content_type='text/csv',
+            as_attachment=True,
+            filename=os.path.basename(output_path)
+        )
 
 
 
