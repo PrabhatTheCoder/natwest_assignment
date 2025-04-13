@@ -49,6 +49,11 @@ You can find example input, reference, and rules files in this Google Drive fold
 
 [Example Files](https://drive.google.com/drive/folders/1CT6r7pEOywQODt2XgZgBb5-ZQNjmB7en?usp=drive_link)
 
+## You can find the Postman collection for this API here:
+
+[Postman Collection](https://survey-quiz.postman.co/workspace/Team-Workspace~0e64a07b-e68d-43f5-83f3-428269c455a1/collection/34406608-524d8bb9-971e-4230-a585-3f18338e6c7d?action=share&creator=34406608&active-environment=34406608-661818f6-2565-4bad-89f2-7df328911bd8)
+
+
 ---
 
 ## 🏗️ Architecture
