@@ -1,0 +1,13 @@
+.env
+bin/
+lib/
+
+# Ignore Django migration files
+**/migrations/
+!**/migrations/__init__.py
+
+# Ignore media folder
+/media/
+
+# Ignore staticfiles_build folder
+/staticfiles_build/
