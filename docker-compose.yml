@@ -69,6 +69,7 @@ services:
     depends_on:
       - redis
       - db
+      - web 
     environment:
       POSTGRES_USER: natwest_user
       POSTGRES_PASSWORD: natwest_password

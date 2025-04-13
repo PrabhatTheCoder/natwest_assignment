@@ -1,4 +1,3 @@
-# utils/transformation.py
 import json
 import yaml
 from typing import Dict, List
@@ -24,7 +23,7 @@ class TransformationEngine:
         allowed_functions = {"max": max, "min": min, "abs": abs, "round": round}
         context = {**input_row, **reference_row, **allowed_functions}
 
-        for rule in self.rules:
+        for rule in self.rules:  # this assumes self.rules is a list of dictionaries
             output_field = rule["output"]
             formula = rule["formula"]
             try:
@@ -33,6 +32,7 @@ class TransformationEngine:
                 output_row[output_field] = f"ERROR in '{formula}': {str(e)}"
 
         return output_row
+
 
     def process_dataframe(self, input_path: str, ref_path: str, output_path: str):
         ref_df = pd.read_csv(ref_path)

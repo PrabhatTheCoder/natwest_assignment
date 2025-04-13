@@ -1,4 +1,4 @@
-# core/tasks.py
+# utils.py
 from celery import shared_task
 import pandas as pd
 from io import BytesIO
@@ -10,9 +10,7 @@ def generate_report_task(input_path, ref_path, rule_path):
     print("output_path", output_path)
     engine = TransformationEngine(rule_path)
     
-    # Ensure chunked processing logic is called
     engine.process_dataframe(input_path, ref_path, output_path)
 
-    # ✅ Must return a string, not a file object
-    return output_path # just return path instead of content
+    return output_path 
 
