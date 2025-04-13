@@ -115,7 +115,7 @@ Request Body:
 JSON
 
 {
-    "email": "prabhat.patel@gmail.com",
+    "email": "prabhat.patel9134@gmail.com",
     "name": "Prabhat",
     "password": "abc123"
 }
@@ -126,7 +126,7 @@ JSON
 {
     "user": {
         "id": "38ff7a36-f927-401b-b21b-8bb73de886e6",
-        "email": "prabhat.patel@gmail.com",
+        "email": "prabhat.patel9134@gmail.com",
         "name": "Prabhat",
         "phone_number": null
     },
@@ -151,7 +151,7 @@ JSON
 
 {
     "user": {
-        "email": "prabhat.patel@gmail.com",
+        "email": "prabhat.patel9134@gmail.com",
         "name": "Prabhat"
     },
     "access": "access_token",
@@ -307,7 +307,7 @@ Bash
 
 curl -X POST [http://0.0.0.0:8000/api/auth/register/](http://0.0.0.0:8000/api/auth/register/) \
 -H "Content-Type: application/json" \
--d '{"email": "prabhat.patel@gmail.com", "name": "Prabhat", "password": "abc123"}'
+-d '{"email": "prabhat.patel9134@gmail.com", "name": "Prabhat", "password": "abc123"}'
 Generate a Report
 Bash
 
