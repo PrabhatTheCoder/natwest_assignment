@@ -42,35 +42,25 @@ from django.http import FileResponse
 import os
 
 
+
 class DownloadReportView(APIView):
     def get(self, request, task_id):
         result = AsyncResult(task_id)
+        if result.ready():
+            output_path = result.get()
 
-        if not result.ready():
-            return Response({"status": result.status}, status=202)
+            if not os.path.exists(output_path):
+                return Response({"error": "Report file not found."}, status=404)
 
-        output_path = result.get()
+            return FileResponse(
+                open(output_path, 'rb'),
+                content_type='text/csv',
+                as_attachment=True,
+                filename=os.path.basename(output_path)
+            )
 
-        # 🔍 Log for debugging
-        print("Returned result from task:", repr(output_path))
-        print("Type:", type(output_path))
+        return Response({"status": result.status}, status=202)
 
-        if not isinstance(output_path, str):
-            return Response({
-                "error": "Invalid return from Celery task",
-                "value": str(output_path),
-                "type": str(type(output_path))
-            }, status=500)
-
-        if not os.path.exists(output_path):
-            return Response({"error": "Report file not found."}, status=404)
-
-        return FileResponse(
-            open(output_path, 'rb'),
-            content_type='text/csv',
-            as_attachment=True,
-            filename=os.path.basename(output_path)
-        )
 
 
 
@@ -100,17 +90,92 @@ class UploadRulesView(APIView):
             return Response({"error": str(e)}, status=500)
 
 
-class TriggerScheduledReportView(APIView):
-    def post(self, request):
-        input_path = os.path.join(settings.MEDIA_ROOT, 'input.csv')
-        ref_path = os.path.join(settings.MEDIA_ROOT, 'reference.csv')
-        rules_path = os.path.join(settings.BASE_DIR, 'app', 'transformation', 'configs', 'rules.json')
 
-        if not (os.path.exists(input_path) and os.path.exists(ref_path)):
-            return Response({"error": "Required files not found in media folder."}, status=400)
+from django_celery_beat.models import PeriodicTask, CrontabSchedule
+import json
+from .models import ReportRun
+
+import os
+import uuid
+import json
+from django.conf import settings
+from django.http import HttpResponse
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import status
+
+from django_celery_beat.models import PeriodicTask, CrontabSchedule
+from .models import ReportRun
+
+from celery.result import AsyncResult
+import json
+
+class TriggerScheduleReportView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        cron = request.data.get("cron")
+        input_file = request.FILES.get("input_file")
+        reference_file = request.FILES.get("reference_file")
+        rules_file = request.FILES.get("rules_file")
+        report_name = request.data.get("report_name") or f"report_{uuid.uuid4().hex[:6]}"
+
+        if not all([cron, input_file, reference_file, rules_file]):
+            return Response(
+                {"error": "cron, input_file, reference_file, and rules_file are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         try:
+            # Parse cron expression
+            minute, hour, day_of_month, month_of_year, day_of_week = cron.split()
+
+            schedule, _ = CrontabSchedule.objects.get_or_create(
+                minute=minute,
+                hour=hour,
+                day_of_week=day_of_week,
+                day_of_month=day_of_month,
+                month_of_year=month_of_year,
+            )
+
+            # Save uploaded files
+            unique_id = uuid.uuid4().hex
+            input_path = os.path.join(settings.MEDIA_ROOT, f"{unique_id}_input.csv")
+            ref_path = os.path.join(settings.MEDIA_ROOT, f"{unique_id}_reference.csv")
+            rules_path = os.path.join(settings.BASE_DIR, 'app', 'transformation', 'configs', f"{unique_id}_rules.json")
+
+            for file_obj, path in [
+                (input_file, input_path),
+                (reference_file, ref_path),
+                (rules_file, rules_path),
+            ]:
+                with open(path, 'wb') as f:
+                    for chunk in file_obj.chunks():
+                        f.write(chunk)
+
+            # Schedule the Celery task and get the task id
             task = generate_report_task.delay(input_path, ref_path, rules_path)
-            return Response({"message": "Scheduled report generation triggered.", "task_id": task.id}, status=202)
+
+            # Create the PeriodicTask (optional)
+            task_args = json.dumps([input_path, ref_path, rules_path])
+            PeriodicTask.objects.create(
+                id = task.id,
+                crontab=schedule,
+                name=f"{report_name}_{unique_id[:6]}",
+                task='app.utils.generate_report_task',
+                args=task_args
+            )
+
+            # Return Celery task ID, not PeriodicTask ID
+            return Response({
+                "message": "Scheduled report generation task created.",
+                "task_id": task.id,
+                "report_name": report_name,
+                "cron": cron
+            }, status=status.HTTP_201_CREATED)
+
+        except ValueError:
+            return Response({"error": "Invalid cron format. Use format like '*/5 * * * *'."}, status=400)
         except Exception as e:
             return Response({"error": str(e)}, status=500)

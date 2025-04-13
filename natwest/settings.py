@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'app'
+    'app',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -140,14 +141,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_BROKER_URL = 'redis://redis_natwest:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis_natwest:6379/0'
-
-
-from celery.schedules import crontab
-
-
-CELERY_BEAT_SCHEDULE = {
-    'generate_report_every_3_minutes': {
-        'task': 'app.utils.generate_report_task',
-        'schedule': crontab(minute='*/3'),
-    },
-}
