@@ -21,17 +21,31 @@ class TransformationEngine:
     def apply_rules(self, input_row: Dict, reference_row: Dict) -> Dict:
         output_row = {}
         allowed_functions = {"max": max, "min": min, "abs": abs, "round": round}
-        context = {**input_row, **reference_row, **allowed_functions}
 
-        for rule in self.rules:  # this assumes self.rules is a list of dictionaries
+        context = {**input_row, **reference_row, **allowed_functions}
+        
+        numeric_fields = ['field3', 'field5', 'refdata4']
+        for field in numeric_fields:
+            if field in context:
+                try:
+                    context[field] = float(context[field])
+                except ValueError:
+                    pass 
+
+        for rule in self.rules:
             output_field = rule["output"]
             formula = rule["formula"]
+
             try:
                 output_row[output_field] = eval(formula, {}, context)
             except Exception as e:
-                output_row[output_field] = f"ERROR in '{formula}': {str(e)}"
+                involved_values = {k: context.get(k) for k in context if k in formula}
+                output_row[output_field] = (
+                    f"ERROR in '{formula}': {str(e)} | Values: {involved_values}"
+                )
 
         return output_row
+
 
 
     def process_dataframe(self, input_path: str, ref_path: str, output_path: str):

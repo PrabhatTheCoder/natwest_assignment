@@ -1,6 +1,6 @@
 [
   {
-    "output": "outfield1",
+    "output": "Name",
     "formula": "field1 + field2"
   },
   {
@@ -13,7 +13,7 @@
   },
   {
     "output": "outfield4",
-    "formula": "field3 / max(field5, refdata4)"
+    "formula": "field3 * max(field5, refdata4)"
   },
   {
     "output": "outfield5",
