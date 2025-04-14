@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
@@ -81,3 +81,24 @@ class LogoutUserView(APIView):
             return Response({"message": "Successfully logged out."}, status=200)
         except Exception as e:
             return Response({"error": str(e)}, status=400)
+
+
+class GetAccessTokenView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        """
+        Get new access token using refresh token from query param.
+        Example: /get-access-token?refresh=<refresh_token>
+        """
+        refresh_token = request.query_params.get('refresh')
+
+        if not refresh_token:
+            return Response({'error': 'Refresh token is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            refresh = RefreshToken(refresh_token)
+            access_token = str(refresh.access_token)
+            return Response({'access': access_token}, status=status.HTTP_200_OK)
+        except TokenError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
