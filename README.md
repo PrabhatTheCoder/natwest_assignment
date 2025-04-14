@@ -327,6 +327,12 @@ curl -X POST [http://0.0.0.0:8000/api/generate-report/](http://0.0.0.0:8000/api/
 -H "Authorization: Bearer <access_token>" \
 -F "input=@/path/to/input.csv" \
 -F "reference=@/path/to/reference.csv"
+
+curl -X POST http://0.0.0.0:8000/api/auth/get-access-token/ \
+-H "Content-Type: application/json" \
+-d '{"refresh": "refresh_Code"}'
+
+
 Conclusion
 This API allows you to manage file uploads, generate reports, and schedule reports efficiently. It is designed for users who need to process and transform large datasets into structured reports with customizable transformation rules. Authentication is provided via token-based systems, ensuring secure access to all endpoints.
 
