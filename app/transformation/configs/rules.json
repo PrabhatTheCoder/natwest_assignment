@@ -13,11 +13,11 @@
   },
   {
     "output": "outfield4",
-    "formula": "field3 * max(field5, refdata4)"
+    "formula": "field3 // max(field5, refdata4)"
   },
   {
     "output": "outfield5",
-    "formula": "min(field5, refdata4)"
+    "formula": "max(field5, refdata4)"
   }
 ]
 
