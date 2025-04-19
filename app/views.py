@@ -63,7 +63,7 @@ class DownloadReportView(APIView):
                 filename=os.path.basename(output_path)
             )
 
-        return Response({"status": result.status}, status=202)
+        return Response({"status": result.status}, status=status.HTTP_202_ACCEPTED)
 
 
 class UploadRulesView(APIView):

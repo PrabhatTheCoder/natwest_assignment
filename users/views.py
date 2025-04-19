@@ -69,18 +69,16 @@ class LogoutUserView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        """
-        Log out the user by blacklisting the refresh token.
-        """
         try:
             refresh_token = request.data.get("refresh")
             if refresh_token:
                 token = RefreshToken(refresh_token)
                 token.blacklist()
-
             return Response({"message": "Successfully logged out."}, status=200)
         except Exception as e:
-            return Response({"error": str(e)}, status=400)
+            return Response({"error": str(e)}, status=400)  # 👈 missing this
+
+
 
 
 class GetAccessTokenView(APIView):
