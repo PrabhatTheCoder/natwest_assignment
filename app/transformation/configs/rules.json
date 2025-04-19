@@ -1,1 +1,22 @@
-[{"output": "sum", "formula": "value + 1"}]
+[
+    {
+      "output": "Name",
+      "formula": "field1 + field2"
+    },
+    {
+      "output": "outfield2",
+      "formula": "refdata1"
+    },
+    {
+      "output": "outfield3",
+      "formula": "refdata2 + refdata3"
+    },
+    {
+      "output": "outfield4",
+      "formula": "field3 * max(field5, refdata4)"
+    },
+    {
+      "output": "outfield5",
+      "formula": "min(field5, refdata4)"
+    }
+  ]
