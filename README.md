@@ -105,8 +105,13 @@ cd natwest_assignment
 ```bash
 docker-compose up --build
 
-3. 
+3.Run Tests inside Docker
 
+After running the application, use the command below to run tests with coverage inside the container (you can do it in another terminal but only after running the application):
+```bash
+docker-compose run web sh -c "coverage erase && coverage run manage.py test && coverage html && coverage report"
+
+4. 
 
 All endpoints are prefixed with this base URL.
 The base URL for the API is:
