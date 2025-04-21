@@ -24,13 +24,12 @@ class TransformationEngine:
 
         context = {**input_row, **reference_row, **allowed_functions}
         
-        numeric_fields = ['field3', 'field5', 'refdata4']
-        for field in numeric_fields:
-            if field in context:
+        for key, value in context.items():
+            if  isinstance(value, str):
                 try:
-                    context[field] = float(context[field])
-                except ValueError:
-                    pass 
+                    context[key] = float(value)
+                except (ValueError, TypeError):
+                    pass
 
         for rule in self.rules:
             output_field = rule["output"]
